@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "2.2",
+  "description": "Downloads file and executes it.",
+  "parameters": {
+    "url": {
+      "description": "(Required) Full download URL.",
+      "type": "String"
+    },
+    "name": {
+      "description": "(Required) File's name",
+      "type": "String"
+    },
+    "destination": {
+      "description": "(Required) Full path where to download (without file name).",
+      "type": "String"
+    }
+  },
+  "mainSteps": [
+    {
+      "action": "aws:downloadContent",
+      "name": "DownloadFile",
+      "inputs": {
+        "sourceType": "HTTP",
+        "sourceInfo": "{\"allowInsecureDownload\":true,\"url\":\"{{ url }}\"}",
+        "destinationPath": "{{ destination }}/{{ name }}"
+      }
+    },
+    {
+      "action": "aws:runPowerShellScript",
+      "name": "ExecuteWindows",
+      "precondition": {
+        "StringEquals": [
+          "platformType",
+          "Windows"
+        ]
+      },
+      "inputs": {
+        "runCommand": [
+          "{{ destination }}\\{{ name }}"
+        ]
+      }
+    },
+    {
+      "action": "aws:runShellScript",
+      "name": "ExecuteLinux",
+      "precondition": {
+        "StringEquals": [
+          "platformType",
+          "Linux"
+        ]
+      },
+      "inputs": {
+        "runCommand": [
+          "{{ destination }}/{{ name }}"
+        ]
+      }
+    }
+  ]
+}
