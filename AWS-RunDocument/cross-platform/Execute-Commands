@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "2.2",
+  "description": "Execute system command(s).",
+  "parameters": {
+    "commands": {
+      "description": "(Required) Commands to execute. Single command: [\"whoami\"]. Multiple commands: [\"whoami\",\"id\"]",
+      "type": "StringList"
+    },
+    "workingDirectory": {
+      "description": "(Optional) Directory where command to be executed. Default is current directory.",
+      "type": "String",
+      "default": "."
+    }
+  },
+  "mainSteps": [
+    {
+      "action": "aws:runPowerShellScript",
+      "name": "ExecuteWindows",
+      "precondition": {
+        "StringEquals": [
+          "platformType",
+          "Windows"
+        ]
+      },
+      "inputs": {
+        "runCommand": "{{ commands }}",
+        "workingDirectory": "{{ workingDirectory }}"
+      }
+    },
+    {
+      "action": "aws:runShellScript",
+      "name": "ExecuteLinux",
+      "precondition": {
+        "StringEquals": [
+          "platformType",
+          "Linux"
+        ]
+      },
+      "inputs": {
+        "runCommand": "{{ commands }}",
+        "workingDirectory": "{{ workingDirectory }}"
+      }
+    }
+  ]
+}
